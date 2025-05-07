@@ -7,6 +7,7 @@ const userRouter = require("./services/User/userService");
 const petRouter = require("./services/Pet/petService");
 const healthRouter = require("./services/HealthRecord/helathRecordServices");
 const reminderRouter = require("./services/Reminder/reminderService");
+const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,6 +29,14 @@ app.use("/", petRouter);
 app.use("/", healthRouter);
 app.use("/", reminderRouter);
 
+// 404 handler (for any route not matched above)
+app.use((req, res, next) => {
+  res.status(404).json({
+    message: 'Route not found',
+    path: req.originalUrl
+  });
+});
+app.use(errorHandler)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
