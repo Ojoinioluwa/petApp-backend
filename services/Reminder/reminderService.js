@@ -1,53 +1,53 @@
 const express = require('express');
 const reminderRouter = express.Router();
-const reminderCtrl   = require('../controllers/reminderCtrl');
 const isAuth         = require('../../middlewares/isAuth');
+const reminderController = require('../../controllers/ReminderCtrl');
 
 // Create a reminder for a pet
 reminderRouter.post(
   '/api/v1/pet/:petId/reminders',
   isAuth,
-  reminderCtrl.createReminder
+  reminderController.createReminder
 );
 
 // Get all reminders for a pet
 reminderRouter.get(
   '/api/v1/pet/:petId/reminders',
   isAuth,
-  reminderCtrl.getReminderByPet
+  reminderController.getReminderByPet
 );
 
 // Get a single reminder by its ID
 reminderRouter.get(
   '/api/v1/reminders/:reminderId',
   isAuth,
-  reminderCtrl.getReminderById
+  reminderController.getReminderById
 );
 
 // Update a reminder
 reminderRouter.put(
   '/api/v1/reminders/:reminderId',
   isAuth,
-  reminderCtrl.updateReminder
+  reminderController.updateReminder
 );
 
 // Delete a reminder
 reminderRouter.delete(
   '/api/v1/reminders/:reminderId',
   isAuth,
-  reminderCtrl.deleteReminder
+  reminderController.deleteReminder
 );
 
 // (Optional) Upcoming vs. Past
 reminderRouter.get(
   '/api/v1/reminders/upcoming',
   isAuth,
-  reminderCtrl.upcomingReminders
+  reminderController.upcomingReminders
 );
 reminderRouter.get(
   '/api/v1/reminders/past',
   isAuth,
-  reminderCtrl.pastReminders
+  reminderController.pastReminders
 );
 
 module.exports = reminderRouter;

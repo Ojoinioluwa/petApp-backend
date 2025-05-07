@@ -12,16 +12,14 @@ const errorHandler = require("./middlewares/errorHandler");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(()=> console.log('MongoDB is connected'))
+mongoose.connect(process.env.MONGODB_URI)
+.then(()=> console.log('MongoDB is connected'))
 .catch(err => console.log(err));
 
 // middlewares
 app.use(express.json());
 app.use(cors());
-// app.use(express.urlencoded({ extended: true }));
+
 
 // consume the routes here
 app.use("/", userRouter);

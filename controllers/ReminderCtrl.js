@@ -211,3 +211,5 @@ const reminderController = {
     }),
 
 }
+
+module.exports = reminderController;

@@ -1,7 +1,7 @@
 const express = require('express');
 const petRouter = express.Router();
-const petController = require('../controllers/petCtrl');
 const isAuth = require('../../middlewares/isAuth');
+const petController = require('../../controllers/petCtrl');
 
 petRouter.post('/api/v1/pet', isAuth, petController.createPet);
 petRouter.get('/api/v1/pet', isAuth, petController.getPetByUser);
