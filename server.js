@@ -5,7 +5,7 @@ const cors = require('cors');
 const scheduleReminders = require("./jobs/sendReminder");
 const userRouter = require("./services/User/userService");
 const petRouter = require("./services/Pet/petService");
-const healthRouter = require("./services/HealthRecord/helathRecordServices");
+const healthRouter = require("./services/HealthRecord/healthRecordServices");
 const reminderRouter = require("./services/Reminder/reminderService");
 const errorHandler = require("./middlewares/errorHandler");
 
