@@ -2,7 +2,7 @@ require("dotenv").config()
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const scheduleReminders = require("./controllers/sendReminder");
+const scheduleReminders = require("./jobs/sendReminder");
 const userRouter = require("./services/User/userService");
 const petRouter = require("./services/Pet/petService");
 const healthRouter = require("./services/HealthRecord/helathRecordServices");
