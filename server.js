@@ -24,9 +24,9 @@ app.use(cors());
 
 // consume the routes here
 app.use("/", userRouter);
-app.use("/api/v1", petRouter);
-app.use("/api/v1", healthRouter);
-app.use("/api/v1", reminderRouter);
+app.use("/", petRouter);
+app.use("/", healthRouter);
+app.use("/", reminderRouter);
 
 
 app.listen(PORT, () => {
