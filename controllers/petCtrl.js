@@ -4,8 +4,14 @@ const Pet = require('../models/Pet');
 
 const petController = {
     createPet: asyncHandler(async (req, res) => {
-        const { name, age, species, breed, image } = req.body;
-        const ownerId = req.user._id; // Assuming the user ID is available in req.user
+        const { name, age, species, breed, image, weight, sex, description } = req.body;
+        const ownerId = req.user; 
+        console.log(ownerId);
+        // Validate required fields
+        if(!name || !age || !species || !breed || !image || !weight || !sex || !description) {
+            res.status(400);
+            throw new Error('All fields are required');
+        }       
 
         // Create a new pet
         const pet = await Pet.create({
@@ -14,6 +20,9 @@ const petController = {
             species,
             breed,
             image,
+            weight,
+            description,
+            sex,
             ownerId,
         });
 
@@ -27,6 +36,9 @@ const petController = {
                 breed: pet.breed,
                 image: pet.image,
                 ownerId: pet.ownerId,
+                weight: pet.weight,
+                description: pet.description,
+                sex: pet.sex,
             },
         });
     }),
@@ -68,7 +80,6 @@ const petController = {
     }),
     updatePet: asyncHandler(async (req, res) => {
         const {petId} = req.params;
-        const { name, age, species, breed, image } = req.body;
 
         // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(petId)) {
@@ -79,7 +90,7 @@ const petController = {
         // Find and update pet by ID
         const pet = await Pet.findByIdAndUpdate(
             petId,
-            { name, age, species, breed, image },
+            ...req.body,
             { new: true }
         );
 

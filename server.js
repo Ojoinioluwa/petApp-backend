@@ -3,10 +3,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const scheduleReminders = require("./jobs/sendReminder");
-const userRouter = require("./services/User/userService");
-const petRouter = require("./services/Pet/petService");
-const healthRouter = require("./services/HealthRecord/healthRecordServices");
-const reminderRouter = require("./services/Reminder/reminderService");
+const userRouter = require("./routes/User/userRoute");
+const petRouter = require("./routes/Pet/petRoute");
+const healthRouter = require("./routes/HealthRecord/healthRecordRoutes");
+const reminderRouter = require("./routes/Reminder/reminderRoute");
 const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
@@ -26,6 +26,7 @@ app.use("/", userRouter);
 app.use("/", petRouter);
 app.use("/", healthRouter);
 app.use("/", reminderRouter);
+
 
 // 404 handler (for any route not matched above)
 app.use((req, res, next) => {
