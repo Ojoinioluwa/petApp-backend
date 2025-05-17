@@ -7,6 +7,7 @@ const Pet = require('../models/Pet');
 const reminderController = {
     createReminder: asyncHandler(async(req,res)=> {
         const { type, title, description, veterinarian, date } = req.body;
+        
         const { petId } = req.params;
         const userId = req.user; // Assuming the user ID is available in req.user
 

@@ -4,7 +4,9 @@ const Pet = require('../models/Pet');
 
 const petController = {
     createPet: asyncHandler(async (req, res) => {
-        const { name, age, species, breed, image, weight, sex, description } = req.body;
+        const { name, age, breed, species, weight, sex, description } = req.body;
+        const image = req.file;
+        // console.log(image)
         const ownerId = req.user; 
         console.log(ownerId);
         // Validate required fields
@@ -19,7 +21,7 @@ const petController = {
             age,
             species,
             breed,
-            image,
+            image: image.path,
             weight,
             description,
             sex,
@@ -46,7 +48,7 @@ const petController = {
         const userId = req.user; 
 
         // Find pets by owner ID
-        const pets = await Pet.find({ ownerId: userId });
+        const pets = await Pet.find({ ownerId: userId }).lean();
 
         if (!pets || pets.length === 0) {
             res.status(404)
@@ -55,7 +57,8 @@ const petController = {
 
         res.status(200).json({
             message: 'Pets found',
-            pets
+            pets,
+            length: pets.length
         });
     }),
     getPetById: asyncHandler(async (req, res) => {

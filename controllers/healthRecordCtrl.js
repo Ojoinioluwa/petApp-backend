@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 const healthRecordController = {
     // create a new health record
     createHealthRecord: asyncHandler(async(req,res)=> {
-        const { type, title, description, veterinarian, cost  } = req.body;
+        const { type, title, description, veterinarian, cost, date  } = req.body;
         const { petId } = req.params;
         const userId = req.user;
 
@@ -21,6 +21,10 @@ const healthRecordController = {
         if(!type || !title || !description || !veterinarian || !cost) {
             res.status(400);
             throw new Error('All fields are required');
+        }
+        if(isNaN(cost)){
+            res.status(400);
+            throw new Error("Cost is expected to be a number")
         }
 
         // Check if pet exists and belongs to the user
@@ -38,16 +42,15 @@ const healthRecordController = {
             description,
             veterinarian,
             cost,
+            date,
             documents: req.files ? req.files.map(file => file.path) : [],
         });
 
         res.status(201).json({
             message: 'Health record created successfully',
-            healthRecord: {
-                id: healthRecordData._id,
-                petId: healthRecordData.petId,
-                healthRecord: healthRecordData.healthRecord,
-            },
+            id: healthRecordData._id,
+            petId: healthRecordData.petId,
+            healthRecord: healthRecordData.healthRecord,
         });
     }),
     // get all health records

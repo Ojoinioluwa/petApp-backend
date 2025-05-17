@@ -72,6 +72,17 @@ const userController = {
             },
         });
     }),
+    getProfile: asyncHandler(async(req, res)=> {
+        const user = await User.findById(req.user.id).select("-password").lean()
+        if(!user){ 
+            res.status(404)
+            throw new Error("User does not exist");
+        }
+        res.status(200).json({
+            message: "User profile fetched succesfully",
+            user
+        })
+    })
 }
 
 module.exports = userController;
