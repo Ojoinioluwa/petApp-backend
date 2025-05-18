@@ -14,7 +14,7 @@ const reminderSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['Vaccination', 'Deworming', 'Treatment', 'Checkup', 'Other'],
+    enum: ['vaccination', 'deworming', 'treatment', 'checkup', 'Other'],
     required: true
   },
   title: {

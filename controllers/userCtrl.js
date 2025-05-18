@@ -9,7 +9,7 @@ const userController = {
     // Register a new user
     register: asyncHandler(async (req, res) => {
         const { name, email, password, phoneNumber, address } = req.body;
-    
+
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -21,7 +21,7 @@ const userController = {
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, salt);
 
-    
+
         const user = await User.create({
             name,
             email,
@@ -40,16 +40,18 @@ const userController = {
             },
         });
     }),
+    // login
     login: asyncHandler(async (req, res) => {
         const { email, password } = req.body;
-    
+
+
         // Check if user exists
-        const user = await User.findOne({ email });    
+        const user = await User.findOne({ email });
         if (!user) {
             res.status(400)
             throw new Error("Invalid credentials");
         }
-    
+
         // Check if password is correct
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
@@ -57,9 +59,9 @@ const userController = {
             throw new Error("Invalid credentials");
         }
 
-        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '30d'});
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
-    
+
         res.status(200).json({
             message: "User logged in successfully",
             token,
@@ -72,9 +74,14 @@ const userController = {
             },
         });
     }),
-    getProfile: asyncHandler(async(req, res)=> {
+    // get profile
+    getProfile: asyncHandler(async (req, res) => {
+        if (!mongoose.Types.ObjectId.isValid(req.user.id)) {
+            res.status(400);
+            throw new Error('Invalid sier ID format');
+        }
         const user = await User.findById(req.user.id).select("-password").lean()
-        if(!user){ 
+        if (!user) {
             res.status(404)
             throw new Error("User does not exist");
         }
@@ -82,6 +89,26 @@ const userController = {
             message: "User profile fetched succesfully",
             user
         })
+    }),
+    // update profile
+    updateProfile: asyncHandler(async (req, res) => {
+        if (!mongoose.Types.ObjectId.isValid(req.user.id)) {
+            res.status(400);
+            throw new Error('Invalid sier ID format');
+        }
+        const user = await User.findByIdAndUpdate(req.user.id, {
+            $set: {
+                name: req.body.name,
+                email: req.body.email,
+                address: req.body.address,
+                phoneNumber: req.body.phoneNumber,
+            }
+        })
+
+        if (!user) {
+            res.status(404)
+            throw new error("User does not exist")
+        }
     })
 }
 

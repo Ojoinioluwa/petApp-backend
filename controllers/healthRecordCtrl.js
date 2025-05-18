@@ -7,8 +7,8 @@ const mongoose = require("mongoose");
 
 const healthRecordController = {
     // create a new health record
-    createHealthRecord: asyncHandler(async(req,res)=> {
-        const { type, title, description, veterinarian, cost, date  } = req.body;
+    createHealthRecord: asyncHandler(async (req, res) => {
+        const { type, title, description, veterinarian, cost, date } = req.body;
         const { petId } = req.params;
         const userId = req.user;
 
@@ -18,11 +18,11 @@ const healthRecordController = {
             throw new Error('Invalid pet ID format');
         }
 
-        if(!type || !title || !description || !veterinarian || !cost) {
+        if (!type || !title || !description || !veterinarian || !cost) {
             res.status(400);
             throw new Error('All fields are required');
         }
-        if(isNaN(cost)){
+        if (isNaN(cost)) {
             res.status(400);
             throw new Error("Cost is expected to be a number")
         }
@@ -54,7 +54,7 @@ const healthRecordController = {
         });
     }),
     // get all health records
-    getHealthRecordByPet: asyncHandler(async(req,res)=> {
+    getHealthRecordByPet: asyncHandler(async (req, res) => {
         const { petId } = req.params;
         const userId = req.user;
 
@@ -65,7 +65,7 @@ const healthRecordController = {
         }
 
         // Check if pet exists and belongs to the user
-        const pet = await Pet.findOne({ _id: petId, ownerId: userId });
+        const pet = await Pet.findOne({ _id: petId, ownerId: userId }).lean();
         if (!pet) {
             res.status(404);
             throw new Error('Pet not found or does not belong to this user');
@@ -84,7 +84,7 @@ const healthRecordController = {
         });
     }),
     // get health record by id
-    getHealthRecordById: asyncHandler(async(req,res)=> {
+    getHealthRecordById: asyncHandler(async (req, res) => {
         const { healthRecordId } = req.params;
         const userId = req.user;
 
@@ -113,8 +113,20 @@ const healthRecordController = {
             healthRecord,
         });
     }),
+    getHealthRecordByUser: asyncHandler(async (req, res) => {
+        const healthRecords = await HealthRecord.find({ ownerId: req.user.id }).populate("petId", "image name sex").lean()
+        if (!healthRecords || healthRecords.length === 0) {
+            res.status(404);
+            throw new Error('No health records found for this pet');
+        }
+
+        res.status(200).json({
+            messsage: "Pets health records for the user as been fetched.",
+            healthRecords,
+        })
+    }),
     // delete health record by id
-    deleteHealthRecord: asyncHandler(async(req,res)=> {
+    deleteHealthRecord: asyncHandler(async (req, res) => {
         const { healthRecordId } = req.params;
         const userId = req.user;
 
@@ -146,7 +158,7 @@ const healthRecordController = {
         });
     }),
     // update health record by id
-    updateHealthRecord: asyncHandler(async(req,res)=> {
+    updateHealthRecord: asyncHandler(async (req, res) => {
         const { healthRecordId } = req.params;
         const userId = req.user;
 

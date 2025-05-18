@@ -1,6 +1,6 @@
 const express = require('express');
 const reminderRouter = express.Router();
-const isAuth         = require('../../middlewares/isAuth');
+const isAuth = require('../../middlewares/isAuth');
 const reminderController = require('../../controllers/ReminderCtrl');
 
 // Create a reminder for a pet

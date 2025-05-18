@@ -1,6 +1,6 @@
 const express = require('express');
 const healthRouter = express.Router();
-const isAuth      = require('../../middlewares/isAuth');
+const isAuth = require('../../middlewares/isAuth');
 const healthRecordController = require('../../controllers/healthRecordCtrl');
 
 // Log a new health record for a pet
@@ -38,4 +38,9 @@ healthRouter.delete(
   healthRecordController.deleteHealthRecord
 );
 
+healthRouter.get(
+  "/api/v1/health-records",
+  isAuth,
+  healthRecordController.getHealthRecordByUser
+)
 module.exports = healthRouter;

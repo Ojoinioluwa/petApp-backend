@@ -1,5 +1,4 @@
 const express = require('express');
-
 const userRouter = express.Router();
 const isAuth = require('../../middlewares/isAuth');
 const userController = require('../../controllers/userCtrl');
@@ -11,7 +10,7 @@ userRouter.post('/api/v1/register', userController.register);
 userRouter.post('/api/v1/login', userController.login);
 
 // get user profile
-userRouter.get("/api/v1/getProfile", userController.getProfile);
+userRouter.get("/api/v1/getProfile", isAuth, userController.getProfile);
 
 // update profile
 

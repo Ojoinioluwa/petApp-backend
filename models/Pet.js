@@ -18,7 +18,7 @@ const petSchema = new mongoose.Schema({
     required: true,
   },
   sex: {
-    type: String, 
+    type: String,
     required: true,
     enum: ["male", "female"]
   },
