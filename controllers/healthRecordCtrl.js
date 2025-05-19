@@ -43,6 +43,7 @@ const healthRecordController = {
             veterinarian,
             cost,
             date,
+            ownerId: userId,
             documents: req.files ? req.files.map(file => file.path) : [],
         });
 
@@ -65,14 +66,14 @@ const healthRecordController = {
         }
 
         // Check if pet exists and belongs to the user
-        const pet = await Pet.findOne({ _id: petId, ownerId: userId }).populate("petId", "name image sex").lean();
+        const pet = await Pet.findOne({ _id: petId, ownerId: userId }).lean();
         if (!pet) {
             res.status(404);
             throw new Error('Pet not found or does not belong to this user');
         }
 
         // Find health records by pet ID
-        const healthRecords = await HealthRecord.find({ petId }).lean();
+        const healthRecords = await HealthRecord.find({ petId }).populate("petId", "name image sex").lean();
         if (!healthRecords || healthRecords.length === 0) {
             res.status(404);
             throw new Error('No health records found for this pet');
@@ -114,7 +115,12 @@ const healthRecordController = {
         });
     }),
     getHealthRecordByUser: asyncHandler(async (req, res) => {
-        const healthRecords = await HealthRecord.find({ ownerId: req.user.id }).populate("petId", "image name sex").lean()
+        if(!mongoose.Types.ObjectId.isValid(req.user)){
+            res.status(400);
+            throw new Error('Invalid sier ID format');
+        }
+        const healthRecords = await HealthRecord.find({ ownerId: req.user }).populate("petId", "image name sex").lean()
+        
         if (!healthRecords || healthRecords.length === 0) {
             res.status(404);
             throw new Error('No health records found for this pet');

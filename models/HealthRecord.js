@@ -8,7 +8,7 @@ const healthRecordSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['Vaccination', 'Deworming', 'Treatment', 'Checkup', 'Other'],
+    enum: ['vaccination', 'deworming', 'treatment', 'checkup', 'Other'],
     required: true
   },
   title: {
@@ -31,6 +31,11 @@ const healthRecordSchema = new mongoose.Schema({
   cost: {
     type: Number,
     min: 0
+  },
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
   documents: [String], // could store URLs or filenames of attached records (e.g., scanned prescriptions)
 }, {

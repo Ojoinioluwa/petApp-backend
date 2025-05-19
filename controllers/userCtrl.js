@@ -76,11 +76,11 @@ const userController = {
     }),
     // get profile
     getProfile: asyncHandler(async (req, res) => {
-        if (!mongoose.Types.ObjectId.isValid(req.user.id)) {
+        if (!mongoose.Types.ObjectId.isValid(req.user)) {
             res.status(400);
-            throw new Error('Invalid sier ID format');
+            throw new Error('Invalid user ID format');
         }
-        const user = await User.findById(req.user.id).select("-password").lean()
+        const user = await User.findById(req.user).select("-password").lean()
         if (!user) {
             res.status(404)
             throw new Error("User does not exist");
@@ -92,11 +92,11 @@ const userController = {
     }),
     // update profile
     updateProfile: asyncHandler(async (req, res) => {
-        if (!mongoose.Types.ObjectId.isValid(req.user.id)) {
+        if (!mongoose.Types.ObjectId.isValid(req.user)) {
             res.status(400);
-            throw new Error('Invalid sier ID format');
+            throw new Error('Invalid user ID format');
         }
-        const user = await User.findByIdAndUpdate(req.user.id, {
+        const user = await User.findByIdAndUpdate(req.user, {
             $set: {
                 name: req.body.name,
                 email: req.body.email,
