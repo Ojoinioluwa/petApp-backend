@@ -71,10 +71,6 @@ const reminderController = {
             .populate("petId", "name image breed sex")
             .sort({ date: -1 })
             .lean();
-        if (!reminders || reminders.length === 0) {
-            res.status(404)
-            throw new Error('No reminders found for this pet');
-        }
 
         res.status(200).json({
             message: 'Reminders found',
@@ -118,10 +114,7 @@ const reminderController = {
             .populate("petId", "name image breed sex")
             .sort({ date: -1 })
             .lean();;
-        if (reminders.length === 0) {
-            res.status(404);
-            throw new Error('No reminders found for this user');
-        }
+
         res.status(200).json({
             message: 'Reminders found',
             reminders

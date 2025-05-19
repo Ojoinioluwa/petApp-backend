@@ -50,11 +50,6 @@ const petController = {
         // Find pets by owner ID
         const pets = await Pet.find({ ownerId: userId }).lean();
 
-        if (!pets || pets.length === 0) {
-            res.status(404)
-            throw new Error('No pets found for this user');
-        }
-
         res.status(200).json({
             message: 'Pets found',
             pets,

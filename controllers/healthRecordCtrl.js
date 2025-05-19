@@ -74,10 +74,6 @@ const healthRecordController = {
 
         // Find health records by pet ID
         const healthRecords = await HealthRecord.find({ petId }).populate("petId", "name image sex").lean();
-        if (!healthRecords || healthRecords.length === 0) {
-            res.status(404);
-            throw new Error('No health records found for this pet');
-        }
 
         res.status(200).json({
             message: 'Health records found',
@@ -121,10 +117,6 @@ const healthRecordController = {
         }
         const healthRecords = await HealthRecord.find({ ownerId: req.user }).populate("petId", "image name sex").lean()
         
-        if (!healthRecords || healthRecords.length === 0) {
-            res.status(404);
-            throw new Error('No health records found for this pet');
-        }
 
         res.status(200).json({
             messsage: "Pets health records for the user as been fetched.",
