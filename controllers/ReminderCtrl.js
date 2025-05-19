@@ -5,9 +5,9 @@ const asyncHandler = require('express-async-handler');
 const Pet = require('../models/Pet');
 
 const reminderController = {
-    createReminder: asyncHandler(async(req,res)=> {
+    createReminder: asyncHandler(async (req, res) => {
         const { type, title, description, veterinarian, date } = req.body;
-        
+
         const { petId } = req.params;
         const userId = req.user; // Assuming the user ID is available in req.user
 
@@ -49,7 +49,7 @@ const reminderController = {
         });
 
     }),
-    getReminderByPet: asyncHandler(async(req,res)=> {
+    getReminderByPet: asyncHandler(async (req, res) => {
         const { petId } = req.params;
         const userId = req.user; // Assuming the user ID is available in req.user
 
@@ -67,7 +67,10 @@ const reminderController = {
         }
 
         // Find reminders by pet ID
-        const reminders = await Reminder.find({ petId });
+        const reminders = await Reminder.find({ petId })
+            .populate("petId", "name image breed sex")
+            .sort({ date: -1 })
+            .lean();
         if (!reminders || reminders.length === 0) {
             res.status(404)
             throw new Error('No reminders found for this pet');
@@ -78,7 +81,7 @@ const reminderController = {
             reminders
         });
     }),
-    getReminderById: asyncHandler(async(req,res)=> {
+    getReminderById: asyncHandler(async (req, res) => {
         const { reminderId } = req.params;
         const userId = req.user; // Assuming the user ID is available in req.user
 
@@ -89,7 +92,10 @@ const reminderController = {
         }
 
         // Check if reminder exists and belongs to the user
-        const reminder = await Reminder.findOne({ _id: reminderId, ownerId: userId });
+        const reminder = await Reminder.findOne({ _id: reminderId, ownerId: userId })
+            .populate("petId", "name image breed sex")
+            .sort({ date: -1 })
+            .lean();;
         if (!reminder) {
             res.status(404)
             throw new Error('Reminder not found or does not belong to this user');
@@ -100,16 +106,19 @@ const reminderController = {
             reminder
         });
     }),
-    getReminderByUser: asyncHandler(async(req, res)=> {
+    getReminderByUser: asyncHandler(async (req, res) => {
         const userId = req.user;
 
-        if(!mongoose.Types.ObjectId.isValid(userId)) {
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
             res.status(400);
             throw new Error('Invalid user ID format');
         }
 
-        const reminders = await Reminder.find({userId});
-        if(reminders.length === 0) {
+        const reminders = await Reminder.find({ userId })
+            .populate("petId", "name image breed sex")
+            .sort({ date: -1 })
+            .lean();;
+        if (reminders.length === 0) {
             res.status(404);
             throw new Error('No reminders found for this user');
         }
@@ -118,8 +127,8 @@ const reminderController = {
             reminders
         });
     }),
-    deleteReminder: asyncHandler(async(req, res)=> {
-        const {reminderId} = req.params;
+    deleteReminder: asyncHandler(async (req, res) => {
+        const { reminderId } = req.params;
         const userId = req.user;
 
         // validate ObjectId
@@ -129,19 +138,19 @@ const reminderController = {
         }
 
         // check if the reminder be;pongs to the user
-        const reminder = await Reminder.findOne({_id: reminderId, userId});
-        if(!reminder){
+        const reminder = await Reminder.findOne({ _id: reminderId, userId });
+        if (!reminder) {
             res.status(404);
             throw new Error('Reminder not found or does not belong to this user');
         }
 
         // delete the reminder
-        await Reminder.deleteOne({_id: reminderId});
+        await Reminder.deleteOne({ _id: reminderId });
         res.status(200).json({
             message: 'Reminder deleted successfully',
         })
     }),
-    updateReminder: asyncHandler(async(req, res)=> {
+    updateReminder: asyncHandler(async (req, res) => {
         const { reminderId } = req.params;
         const userId = req.user; // Assuming the user ID is available in req.user
 
@@ -162,7 +171,7 @@ const reminderController = {
             res.status(400).send('Reminder date must be in the future');
             return;
         }
-        
+
 
         // Update the reminder
         const updatedReminder = await Reminder.findByIdAndUpdate(reminderId, req.body, { new: true });
@@ -172,7 +181,7 @@ const reminderController = {
             reminder: updatedReminder,
         });
     }),
-    upcomingReminders: asyncHandler(async(req, res)=> {
+    upcomingReminders: asyncHandler(async (req, res) => {
         const userId = req.user; // Assuming the user ID is available in req.user
 
         // Get current date
@@ -191,7 +200,7 @@ const reminderController = {
             reminders
         });
     }),
-    pastReminders: asyncHandler(async(req, res)=> {
+    pastReminders: asyncHandler(async (req, res) => {
         const userId = req.user; // Assuming the user ID is available in req.user
 
         // Get current date

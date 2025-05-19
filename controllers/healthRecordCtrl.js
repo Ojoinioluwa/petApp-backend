@@ -65,7 +65,7 @@ const healthRecordController = {
         }
 
         // Check if pet exists and belongs to the user
-        const pet = await Pet.findOne({ _id: petId, ownerId: userId }).lean();
+        const pet = await Pet.findOne({ _id: petId, ownerId: userId }).populate("petId", "name image sex").lean();
         if (!pet) {
             res.status(404);
             throw new Error('Pet not found or does not belong to this user');

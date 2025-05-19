@@ -24,6 +24,12 @@ reminderRouter.get(
   reminderController.getReminderById
 );
 
+reminderRouter.get(
+  "/api/v1/reminders",
+  isAuth,
+  reminderController.getReminderByUser
+)
+
 // Update a reminder
 reminderRouter.put(
   '/api/v1/reminders/:reminderId',
